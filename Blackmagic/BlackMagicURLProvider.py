@@ -122,13 +122,18 @@ class BlackMagicURLProvider(Processor):
 
             match = re.match(self.env["product_name_pattern"], m_prod["name"])
             if match:
-                if not match.group("version"):
+                major = m_prod["urls"]["Mac OS X"][0]["major"]
+                minor = m_prod["urls"]["Mac OS X"][0]["minor"]
+                releaseNum = m_prod["urls"]["Mac OS X"][0]["releaseNum"]
+                version_string = str(major) + "." + str(minor) + "." + str(releaseNum)            
+                
+                if not major and minor and releaseNum:
                     self.output("WARNING: Regex matched but no "
                                 "named group 'version' matched!")
                 p = m_prod.copy()
                 # recording the version extracted by our named group in
                 # 'product_name_pattern'
-                p["version"] = match.group("version")
+                p["version"] = version_string
                 prods.append(p)
         # sort by version and grab the highest one
         latest_prod = sorted(
